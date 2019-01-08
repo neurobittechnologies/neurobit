@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='neurobit',
-      version='1.0',
+      version='1.1',
       description='Neurobit Utilities to score and analyze sleep data using the Z3Score Framework.',
       url='https://github.com/neurobittechnologies/neurobit',
       author='Amiya Patanaik',

@@ -23,36 +23,44 @@ license = Path(home + '/neurobit.lic')
 def filescore(cfsfile, overwrite = False):
 
     if path.isfile(cfsfile[:-3] + 'neo') and not overwrite:
-        print("File is already scored, use --rescore switch to rescore")
-        exit(0)
+        print("File is already scored, Scores will be read from the .neo file")
+        print("Use --rescore switch to rescore")
 
     print("Please select the format for the sleep scores\n")
     print("1. MATLAB (*.mat)")
     print("2. CSV (*_score.csv), sleep scores only")
     print("3. Compumedics XML (*.compumedics.xml)")
     print("4. EDF+ Annotations (*.hyp.edf), original EDF file must be present")
-    print("5. Wonambi XML (*.wonambi.xml)")
+    print("5. Wonambi XML (*.wonambi.xml), original EDF file must be present")
     print("6. JSON dump (*.neo), always saved")
 
     choice = click.prompt('\nEnter your choice: ', type = int, default=1, show_default=False)
 
-    with open(str(license), 'r') as f:
-        config = json.load(f)
-
     head, tail = path.split(cfsfile)
 
-    print('Scoring: %s,' %(tail))
-    start_time = time()
-    stream = {'file': open(cfsfile, 'rb')}
-    response = post(config['url'] + '/score', files=stream, data={'email':config['email'], 'key':config['key']})
-    elapsed_time = time() - start_time
-    print("Time taken: %.3f" % elapsed_time)
+    if path.isfile(cfsfile[:-3] + 'neo') and not overwrite:
+        with open(cfsfile[:-3] + 'neo', "r") as read_file:
+            data = json.load(read_file)
 
-    if response.status_code != 200:
-        print("ERROR communicating with server")
-        exit(0)
+    else:
 
-    data = response.json()
+        with open(str(license), 'r') as f:
+            config = json.load(f)
+
+        print('Scoring: %s,' %(tail))
+        start_time = time()
+        stream = {'file': open(cfsfile, 'rb')}
+        response = post(config['url'] + '/score', files=stream, data={'email':config['email'], 'key':config['key']})
+        elapsed_time = time() - start_time
+        print("Time taken: %.3f" % elapsed_time)
+
+        if response.status_code != 200:
+            print("ERROR communicating with server")
+            exit(0)
+
+        data = response.json()
+
+
     if data['status'] == 0:
         print("Scoring failed\n")
         print(data['message'])
@@ -86,8 +94,8 @@ def batchscore(directory, overwrite = False):
     print("1. MATLAB (*.mat)")
     print("2. CSV (*_score.csv), sleep scores only")
     print("3. Compumedics XML (*.compumedics.xml)")
-    print("4. EDF+ Annotations (*.hyp.edf)")
-    print("5. Wonambi XML (*.wonambi.xml)")
+    print("4. EDF+ Annotations (*.hyp.edf), original EDF file must be present")
+    print("5. Wonambi XML (*.wonambi.xml), original EDF file must be present")
     print("6. JSON dump (*.neo), always saved")
 
     choice = click.prompt('\nEnter your choice: ', type = int, default=1, show_default=False)
@@ -99,20 +107,24 @@ def batchscore(directory, overwrite = False):
         print('Now scoring: %s,' %(cfsfile))
         
         if path.isfile(directory + '/' + cfsfile[:-3] + 'neo') and not overwrite:
-            print("File is already scored, use --rescore switch to rescore")
-            continue
-        
-        start_time = time()
-        stream = {'file': open(directory + '/' + cfsfile, 'rb')}
-        response = post(config['url'] + '/score', files=stream, data={'email':config['email'], 'key':config['key']})
-        elapsed_time = time() - start_time
-        print("Time taken: %.3f" % elapsed_time)
+            print("File is already scored, Scores will be read from the .neo file")
+            print("Use --rescore switch to rescore")
+            with open(directory + '/' + cfsfile[:-3] + 'neo', "r") as read_file:
+                data = json.load(read_file)          
+        else:
+            start_time = time()
+            stream = {'file': open(directory + '/' + cfsfile, 'rb')}
+            response = post(config['url'] + '/score', files=stream, data={'email':config['email'], 'key':config['key']})
+            elapsed_time = time() - start_time
+            print("Time taken: %.3f" % elapsed_time)
 
-        if response.status_code != 200:
-            print("ERROR communicating with server")
-            continue
+            if response.status_code != 200:
+                print("ERROR communicating with server")
+                continue
 
-        data = response.json()
+            data = response.json()
+
+
         if data['status'] == 0:
             print("Scoring failed\n")
             print(data['message'])

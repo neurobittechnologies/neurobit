@@ -133,3 +133,11 @@ For scoring, the following formats are currently supported:
 6. JSON dump (*.neo), always saved
 
 If you need your scores in a format which is not supported, contact us at contact@neurobit.io
+
+
+### Convert your scores from one format to another
+
+If you have already scores your data in one format and now want the scores in another format simply use the score command.
+Neurobit automatically detects that the files are already scored and reads the scores from local disk (in native .neo format) and converts into your format of choice.
+
+    neurobit score --path /path/to/already/scored/direcotory/or/file

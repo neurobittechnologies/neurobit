@@ -54,9 +54,26 @@ def to_wonambi(file_path, scores, artefacts):
     root = ET.fromstring(wonambi_xml)
     epochs = scores.shape[0]
 
+    dataset = ET.SubElement(root,"dataset")
+    filename = ET.SubElement(dataset,"filename")
+    filename.text = file_path + '.edf'
+
+    path = ET.SubElement(dataset,"path")
+    path.text = file_path + '.edf'
+
+    start_time = ET.SubElement(dataset,"start_time")
+    edf_file = pyedflib.EdfReader(file_path + '.edf')
+    start = edf_file.getStartdatetime()
+    start_time.text = start.strftime("%Y-%m-%dT%H:%M:%S.%f")
+    first_second =  ET.SubElement(dataset,"first_second")
+    first_second.text = "0"
+    last_second = ET.SubElement(dataset,"last_second")
+    last_second.text = str(epochs*30)
+
+
     rater = ET.SubElement(root,"rater")
-    rater.attrib['created'] = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f"); 
-    rater.attrib['modified'] = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f"); 
+    rater.attrib['created'] = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f")
+    rater.attrib['modified'] = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f")
     rater.attrib['name'] = "NEO" 
 
     # Add Artefacts
