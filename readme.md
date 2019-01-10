@@ -5,7 +5,7 @@ Neurobit Utilities is a collection of command-line tools to score and analyze sl
 - Read our validation paper: https://academic.oup.com/sleep/article/41/5/zsy041/4954046
 - Know more about our company: https://www.neurobit.io
 
-> **Major Update:** the current version of Z3Score is built ground up from scratch and trained on nearly 60,000+ hours of sleep data collected from 4000+ subjects. We have seen 30 to 45% lower error rates compared to our published results. To test our new scorer, request an access key at: contact@neurobit.io 
+> **Major Update:** the current version of Z3Score is built ground up from scratch and trained on nearly 60,000+ hours of sleep data collected from 4000+ subjects. We have seen 30 to 40% lower error rates compared to our published results. To test our new scorer, request an access key at: contact@neurobit.io 
 
 ## Quick Start Guide Video (10 minutes)
 
